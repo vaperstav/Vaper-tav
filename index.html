@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vapers_tav - Tropical Premium</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            height: 100vh; overflow: hidden; color: white;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .bg-image { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; object-fit: cover; filter: blur(3px) brightness(0.6); 
+        }
+
+        .page { 
+            position: absolute; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center; justify-content: flex-start;
+            z-index: 10; padding: 80px 20px; overflow-y: auto;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .active { display: flex; opacity: 1; }
+
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .title { font-size: 2.2rem; font-weight: 800; margin-bottom: 20px; text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de; line-height: 1.2; }
+
+        .btn-rosa { 
+            background: #ff00de; border: 3px solid #fff; 
+            color: white; padding: 18px 45px; border-radius: 50px; 
+            font-weight: 700; font-size: 1.1rem; cursor: pointer;
+        }
+        .btn-verde { 
+            background: #39ff14; border: 3px solid #fff; 
+            color: black; padding: 18px 45px; border-radius: 50px; 
+            font-weight: 700; font-size: 1.1rem; cursor: pointer;
+        }
+
+        .aviso { 
+            background: rgba(0,0,0,0.8); padding: 25px; border-radius: 20px; 
+            border: 3px solid #ff00de; margin: 20px 0; font-weight: 700; text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .card { 
+            background: rgba(0,0,0,0.6);
+            padding: 10px; border-radius: 20px; display: flex; align-items: center; gap: 15px;
+            margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.2);
+            width: 100%; cursor: pointer;
+        }
+        .card img { flex-shrink: 0; width: 60px; height: 60px; border-radius: 15px; border: 1px solid white; object-fit: cover; }
+        
+        /* Efecto Neón en los nombres */
+        .neon-text { 
+            font-size: 0.9rem; 
+            color: #fff;
+            text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 20px #39ff14;
+            font-weight: bold;
+        }
+        
+        .card p { font-size: 0.75rem; opacity: 0.9; color: white; }
+    </style>
+</head>
+<body>
+
+    <img src="https://i.postimg.cc/y89bVm9Y/images.jpg" class="bg-image" alt="Fondo">
+
+    <div id="screen-home" class="page active">
+        <h1 class="title" style="font-size: 1.8rem; text-shadow: 0 0 10px #fff;">Bienvenido a tu tienda de vapers</h1>
+        <div class="glass-panel" style="margin-bottom:20px;">@vapers_tavv</div>
+        <button class="btn-rosa" onclick="goToStore()">ENTRAR</button>
+    </div>
+
+    <div id="screen-store" class="page">
+        <h1 class="title">VAPERS</h1>
+        <button class="btn-verde" onclick="showCatalog()">VER CATÁLOGO</button>
+    </div>
+
+    <div id="screen-catalog" class="page">
+        <h1 class="title" style="font-size: 1.8rem;">SABORES</h1>
+        <div id="product-list" style="width: 100%; max-width: 400px;"></div>
+        <button onclick="location.reload()" style="background:rgba(255,255,255,0.2); border:2px solid white; color:white; padding: 10px 20px; border-radius: 15px; margin-top:20px; cursor:pointer;">Volver</button>
+    </div>
+
+    <div id="screen-contact" class="page">
+        <h1 class="title">PEDIDO</h1>
+        <div class="aviso">⚠️ ¡Háblame por INSTAGRAM a @vapers_tavv para reservar tu vaper!</div>
+        <button onclick="location.reload()" class="btn-rosa">VOLVER AL INICIO</button>
+    </div>
+
+    <script>
+        const productos = [
+            { nombre: "Fresa", desc: "40k caladas | 15€", img: "https://i.postimg.cc/1tGZdxRN/bud-vape-ole-plus-5000-granada-fresa-pod-desechable.webp" },
+            { nombre: "Triple Mango", desc: "40k caladas | 15€", img: "https://i.postimg.cc/X7vTfB5p/vaper-lost-mary-triple-mango.jpg" },
+            { nombre: "Lemon Lime", desc: "40k caladas | 15€", img: "https://i.postimg.cc/QM5LBLTJ/images-1.jpg" },
+            { nombre: "Watermelon Ice", desc: "40k caladas | 15€", img: "https://i.postimg.cc/ncdmyw0f/Lost-Mary-BM600-Watermelon-Ice-20mg.png" },
+            { nombre: "Frambuesa/Arándano", desc: "40k caladas | 15€", img: "https://i.postimg.cc/wBWTvSR1/10237241-medium-default.png" },
+            { nombre: "Piña Colada", desc: "40k caladas | 15€", img: "https://i.postimg.cc/YSXYHDpG/pinacolada.jpg" },
+            { nombre: "Algodón Azúcar", desc: "40k caladas | 15€", img: "https://i.postimg.cc/gjhgrbjP/LM-06-PACK-10-VAPER-DESECHABLE-LOST-MARY-COTTON-CANDY-ICE-20MG-(ALGODON-DE-AZUCAR).jpg" },
+            { nombre: "Kiwi", desc: "40k caladas | 15€", img: "https://i.postimg.cc/xTxXqJw4/IMG-20260701-194325.jpg" }
+        ];
+
+        function goToStore() { document.getElementById('screen-home').classList.remove('active'); setTimeout(()=>document.getElementById('screen-store').classList.add('active'), 100); }
+        function showCatalog() { 
+            document.getElementById('screen-store').classList.remove('active'); 
+            setTimeout(()=>document.getElementById('screen-catalog').classList.add('active'), 100);
+            const list = document.getElementById('product-list');
+            list.innerHTML = "";
+            productos.forEach(p => {
+                list.innerHTML += `<div class="card" onclick="showContact()"><img src="${p.img}"><div><h3 class="neon-text">${p.nombre}</h3><p>${p.desc}</p></div></div>`;
+            });
+        }
+        function showContact() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('screen-contact').classList.add('active');
+        }
+    </script>
+</body>
+</html>
